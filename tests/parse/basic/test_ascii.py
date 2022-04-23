@@ -20,6 +20,7 @@ A = TypeVar("A")
         ("abc", Parser.ascii_uppercase(), Failure),
         ("ABC", Parser.ascii_uppercase(), Success("A", "BC")),
         ("ABC", Parser.ascii_lowercase(), Failure),
+        ("", Parser.ascii_lowercase(), Failure),
     ],
 )
 def test_ascii(
