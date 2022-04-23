@@ -13,8 +13,8 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../src/dine"))
-autodoc_mock_imports = ["dine"]
+sys.path.insert(0, os.path.abspath(".."))
+# autodoc_mock_imports = ["dine"]
 
 
 # -- Project information -----------------------------------------------------
