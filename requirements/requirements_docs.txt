@@ -1,0 +1,5 @@
+-r requirements.txt
+sphinx==4.4.0
+sphinx-material==0.0.35
+sphinx-autodoc-typehints==1.14.1
+sphinx-markdown-builder==0.5.5
