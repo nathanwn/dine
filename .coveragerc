@@ -1,0 +1,27 @@
+# .coveragerc to control coverage.py
+[run]
+branch = True
+omit =
+    *tests*
+    */__init__.py
+
+[report]
+omit =
+    *tests*
+    */__init__.py
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # re-enable the standard pragma
+    pragma: no cover
+
+    # don't complain if tests don't hit defensive assertion code:
+    raise InvalidBranchException
+
+    # don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+
+    # don't complain about abstract methods, they aren't run:
+    @(abc\.)?abstractmethod
+
+ignore_errors = True
