@@ -4,6 +4,7 @@
   <h5>Parser Combinator Library for Python >= 3.10</h5>
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nathan-wien/dine/Test?style=flat-square)](https://github.com/nathan-wien/dine/actions?query=workflow%3ATest)
+[![Coverage](https://codecov.io/gh/nathan-wien/dine/branch/main/graph/badge.svg)](https://codecov.io/gh/nathan-wien/dine)
 ![Python Version](https://img.shields.io/badge/python%20version-%3E=3.10-02ad93.svg?style=flat-square)
 [![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
