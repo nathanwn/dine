@@ -12,22 +12,6 @@ dine.exceptions module
    :undoc-members:
    :show-inheritance:
 
-dine.main module
-----------------
-
-.. automodule:: dine.main
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dine.parse module
------------------
-
-.. automodule:: dine.parse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 dine.parser module
 ------------------
 

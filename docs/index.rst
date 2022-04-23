@@ -1,17 +1,20 @@
-.. dine documentation master file, created by
-   sphinx-quickstart on Wed Mar 23 19:34:12 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+***
+dine - Parser Combinator Library
+***
 
-Welcome to dine's documentation!
+.. include:: ../README.rst
+  :start-after: start-inclusion-marker-badges
+  :end-before: end-inclusion-marker-badges
+
+
+Introduction
 ================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+dine is a Parser Combinator Library targeting Python >=3.10.
+
+
 
    modules
-
 
 
 Indices and tables
