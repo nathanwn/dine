@@ -28,11 +28,15 @@ ParseFunc = Callable[[Stream], ParseResult[A]]
 
 class Parser(Generic[A]):
     def __init__(self: Parser[A], parse_fn: ParseFunc[A], label: str):
-        self.parse_fn = parse_fn
+        self.parse_fn: ParseFunc[A] = parse_fn
         self.label = label
 
-    def __call__(self: Parser[A], s: Stream) -> ParseResult[A]:
-        return self.parse_fn(s)
+    def __call__(self: Parser[A], s: Union[Stream, str]) -> ParseResult[A]:
+        match s:
+            case str(string):
+                return self.parse_fn(Stream(string))
+            case _:
+                return self.parse_fn(s)
 
     def set_label(self: Parser[A], label: str) -> Parser[A]:
         self.label = label
@@ -110,7 +114,20 @@ class Parser(Generic[A]):
         return Parser(parse_fn, label)
 
     def __or__(self: Parser[A], other: Parser[B]) -> Parser[Union[A, B]]:
-        return self.or_else(other)
+        """
+        Parses A or B
+
+        Parameters
+        ----------
+        other : Parser[B]
+            B parser
+
+        Returns
+        -------
+        Parser[Union[A, B]]
+        """
+
+        return self.or_else(other)  # type: ignore
 
     def map(self: Parser[A], f: Callable[[A], B]) -> Parser[B]:
         """
@@ -254,11 +271,11 @@ class Parser(Generic[A]):
 
         def parse_fn(s: Stream) -> ParseResult[list]:
             val, rs = self.many0_recur(s)
-            match s.head():
-                case (_, loc):
-                    return ParseSuccess(loc, val, rs)
-                case _:
-                    return ParseFailure(
+            match s.head():  # type: ignore
+                case (_, Location(line=line, col=col)):  # type: ignore
+                    return ParseSuccess(Location(line=line, col=col), val, rs)
+                case _:  # type: ignore
+                    return ParseFailure(  # type: ignore
                         loc=s.loc[-1],
                         label=f"zero or more {self.label}",
                         msg="stream exhausted",
