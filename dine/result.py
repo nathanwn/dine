@@ -41,7 +41,13 @@ class ParseSuccess(ParseResult[A]):
                 return False
 
     def __repr__(self):
-        return f"ParseSuccess({repr(self.val)},Stream({str(self.rs)})))"
+        return (
+            "ParseSuccess(\n"
+            f"    loc={str(self.loc)},\n"
+            f"    val={repr(self.val)},\n"
+            f"    rs=Stream({str(self.rs)})\n"
+            ")"
+        )
 
 
 class ParseFailure(ParseResult):
@@ -56,10 +62,11 @@ class ParseFailure(ParseResult):
 
     def __repr__(self):
         return (
-            "ParseFailure("
-            f"loc={str(self.loc)},"
-            f"label={repr(self.label)},"
-            f"msg={repr(self.msg)}))"
+            "ParseFailure(\n"
+            f"    loc={str(self.loc)},\n"
+            f"    label={repr(self.label)},\n"
+            f"    msg={repr(self.msg)}))\n"
+            ")"
         )
 
     def __eq__(self, other: object):
