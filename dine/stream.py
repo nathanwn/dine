@@ -16,7 +16,10 @@ class Location:
                 return False
 
     def __str__(self):
-        return f"line {self.line}, column {self.col}"
+        return f"(line={self.line},col={self.col})"
+
+    def __repr__(self):
+        return f"Location(line={self.line},col={self.col})"
 
 
 class Stream:
@@ -33,10 +36,13 @@ class Stream:
                 col = self.loc[-1].col + 1
             self.loc.append(Location(line, col))
 
+    def remain(self):
+        return self.buf[self.begin :]
+
     def __eq__(self, other: object) -> bool:
         match other:
             case str(s):
-                return str(self) == s
+                return self.remain() == s
             case Stream():
                 if self.buf is other.buf:
                     return self.begin == other.begin
@@ -49,7 +55,7 @@ class Stream:
         return hash(str(self))
 
     def __str__(self) -> str:
-        return self.buf[self.begin :]
+        return f'"{self.remain()}"'
 
     def head(self) -> Optional[Tuple[str, Location]]:
         """

@@ -40,11 +40,8 @@ class ParseSuccess(ParseResult[A]):
             case _:
                 return False
 
-    def __str__(self):
-        return f"({str(self.val)}, {str(self.rs)})"
-
     def __repr__(self):
-        return f"ParseSuccess({str(self.val)}, Stream({str(self.rs)})))"
+        return f"ParseSuccess({repr(self.val)},Stream({str(self.rs)})))"
 
 
 class ParseFailure(ParseResult):
@@ -57,8 +54,13 @@ class ParseFailure(ParseResult):
         self.label: str = label
         self.msg: str = msg
 
-    def __str__(self):
-        return f"Error while parsing {self.label}: {self.msg} at {self.loc}"
+    def __repr__(self):
+        return (
+            "ParseFailure("
+            f"loc={str(self.loc)},"
+            f"label={repr(self.label)},"
+            f"msg={repr(self.msg)}))"
+        )
 
     def __eq__(self, other: object):
         match other:

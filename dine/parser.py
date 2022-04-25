@@ -18,29 +18,43 @@ from dine.exceptions import InvalidBranchException
 from dine.result import ParseFailure, ParseResult, ParseSuccess
 from dine.stream import Location, Stream
 
+# Type Variables
 A = TypeVar("A")
 B = TypeVar("B")
 P = ParamSpec("P")
-
-
 ParseFunc = Callable[[Stream], ParseResult[A]]
 
 
 class Parser(Generic[A]):
-    def __init__(self: Parser[A], parse_fn: ParseFunc[A], label: str):
+    def __init__(self: Parser[A], parse_fn: ParseFunc[A], *, label: Optional[str]):
         self.parse_fn: ParseFunc[A] = parse_fn
-        self.label = label
+        self.label: str = label or str(id(self))
 
     def __call__(self: Parser[A], s: Union[Stream, str]) -> ParseResult[A]:
         match s:
             case str(string):
-                return self.parse_fn(Stream(string))
-            case _:
-                return self.parse_fn(s)
+                stream = Stream(string)
+            case Stream():
+                stream = s
+            case _:  # pragma: no cover
+                raise InvalidBranchException()
+        result = self.parse_fn(stream)
+        match result:
+            case ParseSuccess():
+                return result
+            case ParseFailure(loc=loc, label=label, msg=msg):
+                if self.label is not None:
+                    label = self.label
+                return ParseFailure(loc, label, msg)
+            case _:  # pragma: no cover
+                raise InvalidBranchException()
 
     def set_label(self: Parser[A], label: str) -> Parser[A]:
         self.label = label
         return self
+
+    def __set_builtin_label(self: Parser[A], label: str) -> Parser[A]:
+        return self.set_label(f"{__name__}.Parser.{label}")
 
     def and_then(self: Parser[A], other: Parser[B]) -> Parser[Tuple[A, B]]:
         """
@@ -74,7 +88,7 @@ class Parser(Generic[A]):
                     raise InvalidBranchException()
 
         label = f"{self.label} and then {other.label}"
-        return Parser(parse, label)
+        return Parser(parse, label=label)
 
     def __and__(self: Parser[A], other: Parser[B]) -> Parser[Tuple[A, B]]:
         return self.and_then(other)
@@ -111,7 +125,7 @@ class Parser(Generic[A]):
                     raise InvalidBranchException()
 
         label = f"{self.label} or else {other.label}"
-        return Parser(parse_fn, label)
+        return Parser(parse_fn, label=label)
 
     def __or__(self: Parser[A], other: Parser[B]) -> Parser[Union[A, B]]:
         """
@@ -154,7 +168,7 @@ class Parser(Generic[A]):
                 case _:  # pragma: no cover
                     raise InvalidBranchException()
 
-        return Parser(parse_fn, self.label)
+        return Parser(parse_fn, label=self.label)
 
     def bind(self: Parser[A], f: Callable[[A], Parser[B]]) -> Parser[B]:
         """
@@ -203,7 +217,7 @@ class Parser(Generic[A]):
                 case _:  # pragma: no cover
                     raise InvalidBranchException()
 
-        return Parser(parse_fn, label)
+        return Parser(parse_fn, label=label)
 
     def apply(self: Parser[A], f_parser: Parser[Callable[[A], B]]) -> Parser[B]:
         """
@@ -246,7 +260,7 @@ class Parser(Generic[A]):
                 case _:  # pragma: no cover
                     raise InvalidBranchException()
 
-        return Parser(parse_fn, f"optional {self.label}")
+        return Parser(parse_fn, label=f"optional {self.label}")
 
     def many0_recur(self: Parser[A], s: Stream) -> Tuple[list, Stream]:
         first_result = self(s)
@@ -283,7 +297,7 @@ class Parser(Generic[A]):
 
         return Parser(
             parse_fn,
-            f"zero or more {self.label}",
+            label=f"zero or more {self.label}",
         )
 
     def many1(self) -> Parser[list]:
@@ -308,7 +322,7 @@ class Parser(Generic[A]):
                 case _:  # pragma: no cover
                     raise InvalidBranchException()
 
-        return Parser(parse_fn, f"one or more {self.label}")
+        return Parser(parse_fn, label=f"one or more {self.label}")
 
     def many1_sep_by(self: Parser[A], sep_parser: Parser) -> Parser[list[A]]:
         """
@@ -440,11 +454,11 @@ class Parser(Generic[A]):
                 case _:  # pragma: no cover
                     raise InvalidBranchException()
 
-        return Parser(parse_fn, label)
+        return Parser(parse_fn, label=label)
 
     @staticmethod
     def satisfy(
-        predicate: Callable[[str], bool], label: str = "p_satisfy"
+        predicate: Callable[[str], bool], *, label: str = "satisfy"
     ) -> Parser[str]:
         """
         Parser that parses the next character if the predicate is `True`
@@ -470,7 +484,7 @@ class Parser(Generic[A]):
                         return ParseFailure(
                             loc=loc,
                             label=label,
-                            msg=f"unexpected character {c}",
+                            msg=f"unexpected character '{c}'",
                         )
                 case _:
                     return ParseFailure(
@@ -479,7 +493,7 @@ class Parser(Generic[A]):
                         msg="input stream exhausted",
                     )
 
-        return Parser(parse_fn, label)
+        return Parser(parse_fn, label=label)
 
     @staticmethod
     def char(char: str) -> Parser[str]:
@@ -495,7 +509,7 @@ class Parser(Generic[A]):
         -------
         Parser[str]
         """
-        return Parser.satisfy(lambda c: c == char, f"char '{char}'")
+        return Parser.satisfy(lambda c: c == char, label=f"char '{char}'")
 
     @staticmethod
     def until(predicate: Callable[[str], bool], label: str = "until") -> Parser[str]:
@@ -558,7 +572,7 @@ class Parser(Generic[A]):
                     case _:  # pragma: no cover
                         raise InvalidBranchException()
 
-            return Parser(parse, f"{seq_a_parser}, {seq_b_parser}")
+            return Parser(parse, label=f"{seq_a_parser}, {seq_b_parser}")
 
         list_singleton_parsers: Iterable[Parser] = map(
             lambda parser: parser.map(lambda obj: [obj]), parsers
@@ -619,7 +633,7 @@ class Parser(Generic[A]):
                     loc = s.loc[-1] if len(s.loc) > 0 else Location(0, 0)
             return ParseSuccess(loc=loc, val=a, rs=s)
 
-        return Parser(parse_fn, f"{a}")
+        return Parser(parse_fn, label=f"{a}")
 
     @staticmethod
     def string(literal: str) -> Parser[str]:
@@ -649,7 +663,7 @@ class Parser(Generic[A]):
         -------
         Parser[str]
         """
-        return Parser.satisfy(lambda c: c in string.digits)
+        return Parser.satisfy(lambda c: c in string.digits).set_label("digit")
 
     @staticmethod
     def digit_nonzero() -> Parser[str]:
@@ -660,7 +674,9 @@ class Parser(Generic[A]):
         -------
         Parser[str]
         """
-        return Parser.satisfy(lambda c: c in string.digits and c != "0")
+        return Parser.satisfy(
+            lambda c: c in string.digits and c != "0"
+        ).__set_builtin_label("digit_nonzero")
 
     @staticmethod
     def ascii_lowercase() -> Parser[str]:
@@ -671,7 +687,9 @@ class Parser(Generic[A]):
         -------
         Parser[str]
         """
-        return Parser.satisfy(lambda c: c in string.ascii_lowercase)
+        return Parser.satisfy(
+            lambda c: c in string.ascii_lowercase
+        ).__set_builtin_label("ascii_lowercase")
 
     @staticmethod
     def ascii_uppercase() -> Parser[str]:
@@ -682,7 +700,9 @@ class Parser(Generic[A]):
         -------
         Parser[str]
         """
-        return Parser.satisfy(lambda c: c in string.ascii_uppercase)
+        return Parser.satisfy(
+            lambda c: c in string.ascii_uppercase
+        ).__set_builtin_label("ascii_uppercase")
 
     @staticmethod
     def ascii() -> Parser[str]:
@@ -693,4 +713,8 @@ class Parser(Generic[A]):
         -------
         Parser[str]
         """
-        return Parser.ascii_lowercase().or_else(Parser.ascii_uppercase())
+        return (
+            Parser.ascii_lowercase()
+            .or_else(Parser.ascii_uppercase())
+            .__set_builtin_label("ascii")
+        )
