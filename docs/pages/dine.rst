@@ -1,8 +1,5 @@
-dine package
-============
-
-Submodules
-----------
+API Doc
+======================================
 
 dine.exceptions module
 ----------------------
@@ -12,6 +9,7 @@ dine.exceptions module
    :undoc-members:
    :show-inheritance:
 
+
 dine.parser module
 ------------------
 
@@ -19,6 +17,7 @@ dine.parser module
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 dine.result module
 ------------------
@@ -28,18 +27,11 @@ dine.result module
    :undoc-members:
    :show-inheritance:
 
+
 dine.stream module
 ------------------
 
 .. automodule:: dine.stream
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: dine
    :members:
    :undoc-members:
    :show-inheritance:

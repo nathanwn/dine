@@ -31,8 +31,8 @@ author = "Nhat M. Nguyen"
 extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
     "sphinx_autodoc_typehints",
-    "sphinx_markdown_builder",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -52,7 +52,7 @@ source_suffix = ".rst"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_material"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

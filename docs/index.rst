@@ -1,24 +1,11 @@
-***
-dine - Parser Combinator Library
-***
+.. toctree::
 
-.. include:: ../README.rst
-  :start-after: start-inclusion-marker-badges
-  :end-before: end-inclusion-marker-badges
-
-
-Introduction
-================================
-
-dine is a Parser Combinator Library targeting Python >=3.10.
-
-
-
-   modules
+   pages/intro
+   pages/dine
 
 
 Indices and tables
-==================
+--------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
