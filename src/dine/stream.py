@@ -1,9 +1,11 @@
-from __future__ import annotations
+"""Input stream and location."""
 
-from typing import Optional, Tuple
+from __future__ import annotations
 
 
 class Location:
+    """Location (line and column)."""
+
     def __init__(self, line: int, col: int):
         self.line = line
         self.col = col
@@ -23,6 +25,10 @@ class Location:
 
 
 class Stream:
+    """
+    Stream of characters to parse.
+    """
+
     def __init__(self, buf: str, begin: int = 0) -> None:
         self.buf: str = buf
         self.begin: int = begin
@@ -36,7 +42,14 @@ class Stream:
                 col = self.loc[-1].col + 1
             self.loc.append(Location(line, col))
 
-    def remain(self):
+    def remain(self) -> str:
+        """
+
+        Returns
+        -------
+        The remaining of the parse stream.
+
+        """
         return self.buf[self.begin :]
 
     def __eq__(self, other: object) -> bool:
@@ -57,7 +70,7 @@ class Stream:
     def __str__(self) -> str:
         return f'"{self.remain()}"'
 
-    def head(self) -> Optional[Tuple[str, Location]]:
+    def head(self) -> tuple[str, Location] | None:
         """
         Next character in the parse stream and its location
 
