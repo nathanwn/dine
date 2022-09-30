@@ -18,14 +18,14 @@ A = TypeVar("A")
         (
             "abc",
             Parser.char("a").optional(),
-            Success("a", "bc"),
+            Success(["a"], "bc"),
         ),
         # Stream(abc) --> P(z?)
         # ==> Success(None, Stream(abc))
         (
             "abc",
             Parser.char("z").optional(),
-            Success(None, "abc"),
+            Success([], "abc"),
         ),
     ],
 )
