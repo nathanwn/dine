@@ -1,15 +1,59 @@
-[build-system]
-requires = ["setuptools>=42.0", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.poetry]
+name = "dine"
+version = "0.1.0"
+description = "Parser Combinator Library targeting Python 3.10+"
+authors = ["nathan-wien"]
 
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+black = "22.8.0"
+flake8 = "5.0.4"
+isort = "5.10.1"
+mypy = "0.981"
+pylint = "2.15.3"
+pytest = "^7.1.2"
+
+sphinx = { version = "5.1.1", optional = true }
+sphinx-material = { version = "0.0.35", optional = true }
+sphinx-autodoc-typehints = { version = "1.19.2", optional = true }
+sphinx-markdown-builder = { version = "0.5.5", optional = true }
+sphinx-rtd-theme = { version = "1.0.0", optional = true }
+
+[tool.poetry.extras]
+docs = [
+    "sphinx",
+    "sphinx-material",
+    "sphinx-autodoc-typehints",
+    "sphinx-markdown-builder",
+    "sphinx-rtd-theme",
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# black
 [tool.black]
 line-length = 88
 target-version = ['py310']
 
+# isort
 [tool.isort]
 profile = "black"
 
+# Coverage.py
+[tool.coverage.paths]
+source = ["dine", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["dine"]
+
 [tool.coverage.report]
+show_missing = true
+fail_under = 90
 exclude_lines = [
     # re-enable standard pragma
     "pragma: cover",

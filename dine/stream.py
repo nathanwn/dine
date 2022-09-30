@@ -57,7 +57,7 @@ class Stream:
     def __str__(self) -> str:
         return f'"{self.remain()}"'
 
-    def head(self) -> Optional[Tuple[str, Location]]:
+    def head(self) -> tuple[str, Location] | None:
         """
         Next character in the parse stream and its location
 

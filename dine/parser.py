@@ -3,16 +3,8 @@ from __future__ import annotations
 import string
 from functools import reduce
 from itertools import chain
-from typing import (
-    Callable,
-    Generic,
-    Iterable,
-    Optional,
-    ParamSpec,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import (Callable, Generic, Iterable, Optional, ParamSpec, Tuple,
+                    TypeVar, Union)
 
 from dine.exceptions import InvalidBranchException
 from dine.result import ParseFailure, ParseResult, ParseSuccess
@@ -26,11 +18,11 @@ ParseFunc = Callable[[Stream], ParseResult[A]]
 
 
 class Parser(Generic[A]):
-    def __init__(self: Parser[A], parse_fn: ParseFunc[A], *, label: Optional[str]):
+    def __init__(self: Parser[A], parse_fn: ParseFunc[A], *, label: str | None):
         self.parse_fn: ParseFunc[A] = parse_fn
         self.label: str = label or str(id(self))
 
-    def __call__(self: Parser[A], s: Union[Stream, str]) -> ParseResult[A]:
+    def __call__(self: Parser[A], s: Stream | str) -> ParseResult[A]:
         match s:
             case str(string):
                 stream = Stream(string)
@@ -56,7 +48,7 @@ class Parser(Generic[A]):
     def __set_builtin_label(self: Parser[A], label: str) -> Parser[A]:
         return self.set_label(f"{__name__}.Parser.{label}")
 
-    def and_then(self: Parser[A], other: Parser[B]) -> Parser[Tuple[A, B]]:
+    def and_then(self: Parser[A], other: Parser[B]) -> Parser[tuple[A, B]]:
         """
         Parses A and then B
 
@@ -70,7 +62,7 @@ class Parser(Generic[A]):
         Parser[Tuple[A, B]]
         """
 
-        def parse(s: Stream) -> ParseResult[Tuple[A, B]]:
+        def parse(s: Stream) -> ParseResult[tuple[A, B]]:
             result_a: ParseResult[A] = self(s)
             match result_a:
                 case ParseFailure():
@@ -90,10 +82,10 @@ class Parser(Generic[A]):
         label = f"{self.label} and then {other.label}"
         return Parser(parse, label=label)
 
-    def __and__(self: Parser[A], other: Parser[B]) -> Parser[Tuple[A, B]]:
+    def __and__(self: Parser[A], other: Parser[B]) -> Parser[tuple[A, B]]:
         return self.and_then(other)
 
-    def or_else(self: Parser[A], other: Parser[B]) -> Parser[Union[A, B]]:
+    def or_else(self: Parser[A], other: Parser[B]) -> Parser[A | B]:
         """
         Parses A or B
 
@@ -107,7 +99,7 @@ class Parser(Generic[A]):
         Parser[Union[A, B]]
         """
 
-        def parse_fn(s: Stream) -> ParseResult[Union[A, B]]:
+        def parse_fn(s: Stream) -> ParseResult[A | B]:
             res_a = self(s)
             match res_a:
                 case ParseSuccess(loc=loc_a, val=a, rs=rs_a):
@@ -127,7 +119,7 @@ class Parser(Generic[A]):
         label = f"{self.label} or else {other.label}"
         return Parser(parse_fn, label=label)
 
-    def __or__(self: Parser[A], other: Parser[B]) -> Parser[Union[A, B]]:
+    def __or__(self: Parser[A], other: Parser[B]) -> Parser[A | B]:
         """
         Parses A or B
 
@@ -240,7 +232,7 @@ class Parser(Generic[A]):
 
         return f_parser.and_then(self).map(lambda fn_and_a: fn_and_a[0](fn_and_a[1]))
 
-    def optional(self: Parser[A], default: Optional[A] = None) -> Parser[Optional[A]]:
+    def optional(self: Parser[A], default: A | None = None) -> Parser[A | None]:
         """
         Parses 0 or 1 time
 
@@ -250,7 +242,7 @@ class Parser(Generic[A]):
             Parser that parses A 0 or 1 time
         """
 
-        def parse_fn(s: Stream) -> ParseResult[Optional[A]]:
+        def parse_fn(s: Stream) -> ParseResult[A | None]:
             result = self(s)
             match result:
                 case ParseSuccess():
@@ -262,7 +254,7 @@ class Parser(Generic[A]):
 
         return Parser(parse_fn, label=f"optional {self.label}")
 
-    def many0_recur(self: Parser[A], s: Stream) -> Tuple[list, Stream]:
+    def many0_recur(self: Parser[A], s: Stream) -> tuple[list, Stream]:
         first_result = self(s)
         match first_result:
             case ParseFailure():
