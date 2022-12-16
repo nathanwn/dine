@@ -6,7 +6,7 @@ dine: Parser Combinator Library
 
 .. image:: https://img.shields.io/github/workflow/status/nathan-wien/dine/Test?style=flat-square
     :alt: Build Status
-    :target: https://github.com/nathan-wien/dine/actions?query=workflow%3ATest
+    :target: https://img.shields.io/github/actions/workflow/status/nathan-wien/dine/test.yml?branch=main
 
 .. image:: https://codecov.io/gh/nathan-wien/dine/branch/main/graph/badge.svg
     :alt: Coverage
