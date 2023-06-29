@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import pytest
 
 from dine.stream import Location, Stream
@@ -15,7 +13,7 @@ from dine.stream import Location, Stream
         ),
     ],
 )
-def test_stream(input_text: str, loc_list: list[Tuple[int, int]]):
+def test_stream(input_text: str, loc_list: list[tuple[int, int]]):
     s = Stream(input_text)
     assert len(s.loc) == len(loc_list)
     for i in range(len(loc_list)):
