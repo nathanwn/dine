@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import string
+from collections.abc import Callable, Iterable
 from functools import reduce
 from itertools import chain
-from typing import Callable, Generic, Iterable, ParamSpec, TypeVar
+from typing import Generic, ParamSpec, TypeVar
 
 from dine.errors import InternalError
 from dine.result import ParseFailure, ParseResult, ParseSuccess
