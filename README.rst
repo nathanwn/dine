@@ -4,17 +4,13 @@ dine: Parser Combinator Library
 ======================================
 
 
-.. image:: https://img.shields.io/github/workflow/status/nathan-wien/dine/Test?style=flat-square
+.. image:: https://img.shields.io/github/actions/workflow/status/nathan-wien/dine/test.yml?branch=main
     :alt: Build Status
     :target: https://img.shields.io/github/actions/workflow/status/nathan-wien/dine/test.yml?branch=main
 
-.. image:: https://codecov.io/gh/nathan-wien/dine/branch/main/graph/badge.svg
+.. image:: https://codecov.io/gh/nathanwn/dine/branch/main/graph/badge.svg
     :alt: Coverage
-    :target: https://codecov.io/gh/nathan-wien/dine
-
-.. image:: https://readthedocs.org/projects/dine/badge/?version=latest
-    :alt: Documentation Status
-    :target: https://dine.readthedocs.io/en/latest/?badge=latest
+    :target: https://codecov.io/gh/nathanwn/dine
 
 .. image:: https://img.shields.io/badge/python%20version-%3E=3.10-02ad93.svg?style=flat-square
     :alt: Python Version
@@ -32,10 +28,6 @@ Introduction
 
 .. end-inclusion-marker-header
 
-
-Contents
-------------------------
-.. contents:: This README includes the following sections
 
 .. start-inclusion-marker-readme-content
 
